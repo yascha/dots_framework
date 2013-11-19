@@ -4,7 +4,7 @@ import random
 
 class Board(object):
 
-    def __init__(self, numRows, numColumns, seed=time.time()):
+    def __init__(self, numRows=6, numColumns=6, seed=time.time()):
         self.seed = seed
         self.numColumns = numColumns
         self.numRows = numRows
@@ -23,13 +23,15 @@ class Board(object):
                 col.append(random.randint(0, Colours.NUM_COLOURS-1))
             self.columns.append(col)
             
-    def printBoard(self, spacing=2):
+    def printBoard(self, spacing=4):
         """ Prints the board state """
         # Remember that the first piece in each column is at the bottom
         for row in xrange(self.numRows-1, -1, -1):
+            boardRow = ""
             for col in self.columns:
-                print Colours.chars[col[row]]
-            print "\n"
+                boardRow += " "*spacing + Colours.chars[col[row]]
+                #print Colours.chars[col[row]]
+            print boardRow + "\n"
 
 
 class Colours:
