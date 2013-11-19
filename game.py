@@ -6,10 +6,14 @@ class Board(object):
 
     def __init__(numRows, numColumns, seed=time.time()):
         self.seed = seed
-        self.numRows = numRows
-        self.numColumns = numColumns
         random.seed(seed)
-        
+        _setupBoard()
+
+
+    def _setupBoard(self, numRows, numColumns):
+        self.columns = []
+        for col in numColumns:
+            # Make a row
 
 
 
