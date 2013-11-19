@@ -1,26 +1,51 @@
-from time import *
-from random import *
+import time
+import random
 
 
 class Board(object):
 
-    def __init__(numRows, numColumns, seed=time.time()):
+    def __init__(self, numRows, numColumns, seed=time.time()):
         self.seed = seed
+        self.numColumns = numColumns
+        self.numRows = numRows
+        self._setupBoard(numRows, numColumns, self.seed)
+
+
+    def _setupBoard(self, numRows, numColumns, seed):
+        """ Sets up the initial board state """
         random.seed(seed)
-        _setupBoard()
-
-
-    def _setupBoard(self, numRows, numColumns):
         self.columns = []
-        for col in numColumns:
-            # Make a row
+        
+        # TODO: Make a column class that is derived from list
+        for _ in xrange(0, numColumns):
+            col = []
+            for _ in xrange(0, numRows):
+                col.append(random.randint(0, Colours.NUM_COLOURS-1))
+            self.columns.append(col)
+            
+    def printBoard(self, spacing=2):
+        """ Prints the board state """
+        # Remember that the first piece in each column is at the bottom
+        for row in xrange(self.numRows-1, -1, -1):
+            for col in self.columns:
+                print Colours.chars[col[row]]
+            print "\n"
 
 
-
-class Colour:
+class Colours:
     RED = 0
     BLUE = 1
     GREEN = 2
     YELLOW = 3
     PURPLE = 4
+
+    NUM_COLOURS = 5
+
+    chars = {
+                RED : 'r',
+                BLUE : 'b',
+                GREEN : 'g',
+                YELLOW : 'y',
+                PURPLE : 'p'
+            } 
 
