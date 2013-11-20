@@ -30,7 +30,6 @@ class Board(object):
             boardRow = ""
             for col in self.columns:
                 boardRow += " "*spacing + Colours.chars[col[row]]
-                #print Colours.chars[col[row]]
             print boardRow + "\n"
 
 
