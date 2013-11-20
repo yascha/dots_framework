@@ -32,6 +32,16 @@ class Board(object):
                 boardRow += " "*spacing + Colours.chars[col[row]]
             print boardRow + "\n"
 
+    def isValidMove(self, coordsList):
+        """ 
+        Check if the requested move is valid.
+        Returns true if the move is valid, false otherwise.
+        Takes:
+            coordsList - a list of tuples of the form (xcoord, ycoord) 
+                where (0,0) is the bottom left corner of the board.
+        """
+        
+
 
 class Colours:
     RED = 0
