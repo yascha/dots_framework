@@ -10,7 +10,7 @@ Framework to play a dots game between multiple bots
 - bots will make a single move per incantation
 
 #### API
-- all values will be comma-separated
+- moves must be sent to the framework as a series of (x,y) coordinates where (0,0) is the bottom left corner of the board
 
 
 ##### Things that need to be passed to each bot:
