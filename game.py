@@ -74,8 +74,6 @@ class Board(object):
         reversePaths = []
         for coords in paths:
             reversePaths.append((coords[1],coords[0]))
-        #print "paths = " + str(paths)
-        #print "reversePaths = " + str(reversePaths)
         
         # You can't go backwards
         for path in reversePaths:
