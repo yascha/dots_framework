@@ -60,9 +60,29 @@ class Board(object):
                    for coords in coordsList):
             return False
         
-        # Now make sure they are all connected
+        # Make sure they are all connected
+        for position in xrange(1, len(coordsList)):
+            if not self._coordsAreNeighbours(coordsList[position-1], coordsList[position]):
+                return False
         
+        # Make sure they don't cross the same path twice
+        paths = [(coordsList[position-1], coordsList[position]) for position in xrange(1, len(coordsList))]
+        if len(set(paths)) != len(paths):
+            return False
         
+        # Check if they did the same path in the other direction
+        reversePaths = []
+        for coords in paths:
+            reversePaths.append((coords[1],coords[0]))
+        print "paths = " + str(paths)
+        print "reversePaths = " + str(reversePaths)
+        
+        # You can't go backwards
+        for path in reversePaths:
+            if path in paths:
+                return False
+        
+
         
         return True
     
@@ -84,21 +104,31 @@ class Board(object):
         """
         if (xcoords == None or ycoords == None):
             return False
+        
         if not (xcoords >= 0 and xcoords < self.numColumns and 
                 ycoords >= 0 and ycoords < self.numRows):
             return False
+        
         return True
 
 
-    def _isNeighbour(self, firstDotCoords, secondDotCoords):
+    def _coordsAreNeighbours(self, firstDotCoords, secondDotCoords):
         """
         Checks if the two passed in locations are vertical or
         horizontal neighbours.
         Returns true if so, false otherwise.
         """
-        # TODO: Implement this
-        return True
+        getXNeighbours = lambda x, y : [(x2, y) for x2 in range(max(x-1, 0), min(x+2, self.numColumns)) if -1 < x < self.numColumns and x != x2]
+        getYNeighbours = lambda x, y : [(x, y2) for y2 in range(max(y-1, 0), min(y+2, self.numRows)) if -1 < y < self.numRows and y != y2]
 
+        firstDotXNeighbours = getXNeighbours(firstDotCoords[0], firstDotCoords[1])
+        firstDotYNeighbours = getYNeighbours(firstDotCoords[0], firstDotCoords[1])
+        firstDotNeighbours = firstDotXNeighbours + firstDotYNeighbours
+        
+        if secondDotCoords in firstDotNeighbours:
+            return True
+        
+        return False
 
 class Colours:
     RED = 0
