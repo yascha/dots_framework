@@ -52,7 +52,7 @@ class Board(object):
             self._fillBoard(moveColour)
         else:
             self._removeDots(coordsList)
-            self.fillBoard()
+            self._fillBoard()
 
         if printBoard:
             self.printBoard()
@@ -168,7 +168,12 @@ class Board(object):
         Remove the dots specified in coordsList.
         Assumes that the move is not a box.
         """
-        pass # TODO: Implement this 
+        # TODO: Make this better   :(
+        for (x,y) in coordsList:
+            self.columns[x][y] = -1
+
+        self._removeAllDotsOfOneColour(-1)
+
 
     def _removeAllDotsOfOneColour(self, colour):
         """
