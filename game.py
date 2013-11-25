@@ -20,7 +20,7 @@ class Board(object):
         for _ in xrange(0, numColumns):
             col = []
             for _ in xrange(0, numRows):
-                col.append(self._getColour())
+                col.append(self._getNewDotColour())
             self.columns.append(col)
             
     def printBoard(self, spacing=4):
@@ -47,11 +47,12 @@ class Board(object):
             return False
 
         if self._isBox(coordsList):
-            self._removeAllDotsOfOneColour(self._getColour(coordsList[0][0], coordsList[0][1]))
+            moveColour = self._getDotColour(coordsList[0][0], coordsList[0][1])
+            self._removeAllDotsOfOneColour(moveColour)
+            self._fillBoard(moveColour)
         else:
             self._removeDots(coordsList)
-
-        self._fillBoard()
+            self.fillBoard()
 
         if printBoard:
             self.printBoard()
@@ -77,8 +78,8 @@ class Board(object):
                 return False
         
         # Make sure all the dots are the same colour
-        firstDotColour = self._getColour(coordsList[0][0], coordsList[0][1])
-        if not all(firstDotColour == self._getColour(coords[0], coords[1]) 
+        firstDotColour = self._getDotColour(coordsList[0][0], coordsList[0][1])
+        if not all(firstDotColour == self._getDotColour(coords[0], coords[1]) 
                    for coords in coordsList):
             return False
         
@@ -104,7 +105,7 @@ class Board(object):
          
         return True
     
-    def _getColour(self, xcoords, ycoords):
+    def _getDotColour(self, xcoords, ycoords):
         """
         Gets the numerical colour (from Colours) of the dot at the 
         specified coordinates where (0,0) is the bottom left corner
@@ -182,9 +183,9 @@ class Board(object):
     def _fillBoard(self, filterColour=None):
         for col in self.columns:
             while len(col) < self.numRows:
-                col.append(self._getColour(filterColour))
+                col.append(self._getNewDotColour(filterColour))
 
-    def _getColour(self, filterColour=None):
+    def _getNewDotColour(self, filterColour=None):
         """
         Get a colour to populate on the board.
         If filterColour is not None, don't return filterColour.
