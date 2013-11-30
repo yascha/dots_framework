@@ -20,7 +20,7 @@ class Board(object):
         for _ in xrange(0, numColumns):
             col = []
             for _ in xrange(0, numRows):
-                col.append(random.randint(0, Colours.NUM_COLOURS-1))
+                col.append(self._getNewDotColour())
             self.columns.append(col)
             
     def printBoard(self, spacing=4):
@@ -29,21 +29,44 @@ class Board(object):
         for row in xrange(self.numRows-1, -1, -1):
             boardRow = ""
             for col in self.columns:
-                boardRow += " "*spacing + Colours.chars[col[row]]
+                try:
+                    boardRow += " "*spacing + Colours.chars[col[row]]
+                except IndexError:
+                    boardRow += " "*spacing + " "
             print boardRow + "\n"
             # TODO: Look into actually printing each char in colour.
             # There are lots of python libraries that do cross-platform
             # ANSI colouring of text.
 
+    def move(self, coordsList, printBoard=True):
+        """
+        Play a move and print the new boardstate if requested.
+        Returns True if the move was played successfully, false otherwise.
+        """
+        if not self._isValidMove(coordsList):
+            return False
+
+        if self._isBox(coordsList):
+            moveColour = self._getDotColour(coordsList[0][0], coordsList[0][1])
+            self._removeAllDotsOfOneColour(moveColour)
+            self._fillBoard(moveColour)
+        else:
+            self._removeDots(coordsList)
+            self._fillBoard()
+
+        if printBoard:
+            self.printBoard()
+
+        return True
+
     def _isValidMove(self, coordsList):
         """ 
         Check if the requested move is valid.
-        Returns true if the move is valid, false otherwise.
+        Returns True if the move is valid, False otherwise.
         Takes:
             coordsList - a list of tuples of the form (xcoord, ycoord) 
                 where (0,0) is the bottom left corner of the board.
-        """
-        
+        """ 
         # For a move to be valid, all dots must be the same colour,
         # the path must not cross the same dot more than twice,
         # and the same path between two dots cannot be traversed more
@@ -55,8 +78,8 @@ class Board(object):
                 return False
         
         # Make sure all the dots are the same colour
-        firstDotColour = self._getColour(coordsList[0][0], coordsList[0][1])
-        if not all(firstDotColour == self._getColour(coords[0], coords[1]) 
+        firstDotColour = self._getDotColour(coordsList[0][0], coordsList[0][1])
+        if not all(firstDotColour == self._getDotColour(coords[0], coords[1]) 
                    for coords in coordsList):
             return False
         
@@ -79,12 +102,10 @@ class Board(object):
         for path in reversePaths:
             if path in paths:
                 return False
-        
-
-        
+         
         return True
     
-    def _getColour(self, xcoords, ycoords):
+    def _getDotColour(self, xcoords, ycoords):
         """
         Gets the numerical colour (from Colours) of the dot at the 
         specified coordinates where (0,0) is the bottom left corner
@@ -116,8 +137,10 @@ class Board(object):
         horizontal neighbours.
         Returns true if so, false otherwise.
         """
-        getXNeighbours = lambda x, y : [(x2, y) for x2 in range(max(x-1, 0), min(x+2, self.numColumns)) if -1 < x < self.numColumns and x != x2]
-        getYNeighbours = lambda x, y : [(x, y2) for y2 in range(max(y-1, 0), min(y+2, self.numRows)) if -1 < y < self.numRows and y != y2]
+        getXNeighbours = lambda x, y : [(x2, y) for x2 in range(max(x-1, 0), 
+            min(x+2, self.numColumns)) if -1 < x < self.numColumns and x != x2]
+        getYNeighbours = lambda x, y : [(x, y2) for y2 in range(max(y-1, 0), 
+            min(y+2, self.numRows)) if -1 < y < self.numRows and y != y2]
 
         firstDotNeighbours = getXNeighbours(firstDotCoords[0], firstDotCoords[1]) + getYNeighbours(firstDotCoords[0], firstDotCoords[1])
         
@@ -125,6 +148,59 @@ class Board(object):
             return True
         
         return False
+
+    def _isBox(self, coordsList):
+        """ 
+        Checks if the passed in move makes a box.
+        Returns True if so, False otherwise.
+        Note: Assumes that the move is valid.
+        """
+        # To be a box, the same coordinates have to be touched twice.
+        if len(coordsList) > len(set(coordsList)):
+            return True
+        
+        return False
+
+    def _removeDots(self, coordsList):
+        """
+        Remove the dots specified in coordsList.
+        Assumes that the move is not a box.
+        """
+        # TODO: Make this better   :(
+        for (x,y) in coordsList:
+            self.columns[x][y] = -1
+
+        self._removeAllDotsOfOneColour(-1)
+
+
+    def _removeAllDotsOfOneColour(self, colour):
+        """
+        Remove all of the dots of a given colour.
+        """
+        def filterColour(myColour):
+            return myColour != colour
+
+        for col in xrange(0, self.numColumns):
+            self.columns[col] = filter(filterColour, self.columns[col])
+
+    def _fillBoard(self, filterColour=None):
+        for col in self.columns:
+            while len(col) < self.numRows:
+                col.append(self._getNewDotColour(filterColour))
+
+    def _getNewDotColour(self, filterColour=None):
+        """
+        Get a colour to populate on the board.
+        If filterColour is not None, don't return filterColour.
+        Returns a colour from the Colours class.
+        """
+        if filterColour is None:
+            return random.randint(0, Colours.NUM_COLOURS-1)
+        else:
+            returnColour = random.randint(0, Colours.NUM_COLOURS-1)
+            while (returnColour == filterColour):
+                returnColour = random.randint(0, Colours.NUM_COLOURS-1)
+            return returnColour
 
 class Colours:
     RED = 0
