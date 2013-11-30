@@ -33,7 +33,7 @@ class Board(object):
             print boardRow + "\n"
             # TODO: Look into actually printing each char in colour.
             # There are lots of python libraries that do cross-platform
-            # ANSI colouring of text
+            # ANSI colouring of text.
 
     def _isValidMove(self, coordsList):
         """ 
@@ -119,9 +119,7 @@ class Board(object):
         getXNeighbours = lambda x, y : [(x2, y) for x2 in range(max(x-1, 0), min(x+2, self.numColumns)) if -1 < x < self.numColumns and x != x2]
         getYNeighbours = lambda x, y : [(x, y2) for y2 in range(max(y-1, 0), min(y+2, self.numRows)) if -1 < y < self.numRows and y != y2]
 
-        firstDotXNeighbours = getXNeighbours(firstDotCoords[0], firstDotCoords[1])
-        firstDotYNeighbours = getYNeighbours(firstDotCoords[0], firstDotCoords[1])
-        firstDotNeighbours = firstDotXNeighbours + firstDotYNeighbours
+        firstDotNeighbours = getXNeighbours(firstDotCoords[0], firstDotCoords[1]) + getYNeighbours(firstDotCoords[0], firstDotCoords[1])
         
         if secondDotCoords in firstDotNeighbours:
             return True
