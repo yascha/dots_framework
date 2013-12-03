@@ -2,6 +2,9 @@ import time
 import random
 import colours
 
+from colorama import init as colorama_init
+from colorama import Fore
+
 class Board(object):
 
     def __init__(self, numRows=6, numColumns=6, seed=time.time()):
@@ -9,6 +12,8 @@ class Board(object):
         self.numColumns = numColumns
         self.numRows = numRows
         self._setupBoard(numRows, numColumns, self.seed)
+        self._colours = colours.Colours()
+        colorama_init()
 
 
     def _setupBoard(self, numRows, numColumns, seed):
@@ -30,7 +35,7 @@ class Board(object):
             boardRow = ""
             for col in self.columns:
                 try:
-                    boardRow += " "*spacing + colours.Colours.chars[col[row]]
+                    boardRow += " "*spacing + self._colours.colour(col[row])
                 except IndexError:
                     boardRow += " "*spacing + " "
             print boardRow + "\n"

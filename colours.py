@@ -1,3 +1,4 @@
+from colorama import Fore
 
 class Colours:
     RED = 0
@@ -16,4 +17,16 @@ class Colours:
                 PURPLE : 'p'
             } 
 
-            
+    escapes = {
+                RED : Fore.RED,
+                BLUE : Fore.BLUE,
+                GREEN : Fore.GREEN,
+                YELLOW : Fore.YELLOW,
+                PURPLE : Fore.MAGENTA
+               }
+
+    def colour(self, colour):
+        """Takes a numerical colour and returns a coloured char to represent it
+        
+        """
+        return Colours.escapes[colour] + Colours.chars[colour] + Fore.RESET
