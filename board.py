@@ -35,7 +35,7 @@ class Board(object):
             boardRow = ""
             for col in self.columns:
                 try:
-                    boardRow += " "*spacing + self._colours.colour(col[row])
+                    boardRow += " "*spacing + self._colours.colour(col[row])c
                 except IndexError:
                     boardRow += " "*spacing + " "
             print boardRow + "\n"
