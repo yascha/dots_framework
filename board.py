@@ -3,7 +3,6 @@ import random
 import colours
 
 from colorama import init as colorama_init
-from colorama import Fore
 
 class Board(object):
 
@@ -39,9 +38,6 @@ class Board(object):
                 except IndexError:
                     boardRow += " "*spacing + " "
             print boardRow + "\n"
-            # TODO: Look into actually printing each char in colour.
-            # There are lots of python libraries that do cross-platform
-            # ANSI colouring of text.
 
     def move(self, coordsList, printBoard=True):
         """
@@ -74,44 +70,49 @@ class Board(object):
         Check if the requested move is valid.
         Returns True if the move is valid, raises InvalidMoveException otherwise.
         Takes:
-            coordsList - a list of tuples of the form (xcoord, ycoord) 
-                where (0,0) is the bottom left corner of the board.
+            coordsList - a list of tuples of the form (xcoord, ycoord)
+                         where (0,0) is the bottom left corner of the board.
         """ 
         # For a move to be valid, all dots must be the same colour,
         # the path must not cross the same dot more than twice,
         # and the same path between two dots cannot be traversed more
         # than once.
-        
+
         # Make sure all the coordinates are valid
-        for (x,y) in coordsList:
-            if not self._areValidCoords(x,y):
-                raise InvalidMoveException
+        for (x, y) in coordsList:
+            if not self._areValidCoords(x, y):
+                raise InvalidMoveException("Coordinates ({0},{1}) are not "
+                                           "valid.".format(x, y))
         
         # Make sure all the dots are the same colour
         firstDotColour = self._getDotColour(coordsList[0][0], coordsList[0][1])
         if not all(firstDotColour == self._getDotColour(coords[0], coords[1]) 
                    for coords in coordsList):
-            raise InvalidMoveException
+            raise InvalidMoveException("All specified dots must be of the "
+                                       "same colour.")
         
         # Make sure they are all connected
         for position in xrange(1, len(coordsList)):
-            if not self._coordsAreNeighbours(coordsList[position-1], coordsList[position]):
-                raise InvalidMoveException
+            prevPos = coordsList[position-1]
+            currentPos = coordsList[position]
+            if not self._coordsAreNeighbours(prevPos, currentPos):
+                raise InvalidMoveException("Dots {0} and {1} are not "
+                                           "connected.".format(prevPos, currentPos))
         
         # Make sure they don't cross the same path twice
         paths = [(coordsList[position-1], coordsList[position]) for position in xrange(1, len(coordsList))]
         if len(set(paths)) != len(paths):
-            raise InvalidMoveException
+            raise InvalidMoveException("Detected multiple crossing of the same path.")
         
         # Check if they did the same path in the other direction
         reversePaths = []
         for coords in paths:
-            reversePaths.append((coords[1],coords[0]))
+            reversePaths.append((coords[1], coords[0]))
         
         # You can't go backwards
         for path in reversePaths:
             if path in paths:
-                raise InvalidMoveException
+                raise InvalidMoveException("Detected multiple crossing of the same path.")
         
         return True
     

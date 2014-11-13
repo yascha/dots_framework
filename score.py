@@ -7,3 +7,6 @@ class Score(object):
     def addToScore(self, pointsToAdd):
         self._score += pointsToAdd
         return self._score
+
+    def getScore(self):
+        return self._score
