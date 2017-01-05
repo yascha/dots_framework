@@ -56,7 +56,9 @@ class Game(object):
             raise board.InvalidMoveException("User input format invalid. Must be "
                                              "a list of at least 2 or more (x,y) "
                                              "coordinate tuples delimited by "
-                                             "commas. e.g. (1,2),(3,4)")
+                                             "commas (with 0,0 being the bottom "
+                                             "left corner). "
+                                             " e.g. (1,2),(3,4)")
 
         coordsList = [(int(matchingGroups[1]), int(matchingGroups[2]))
                       for matchingGroups in self._validInputRegex.findall(userInput)]
